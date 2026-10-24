@@ -1,0 +1,4 @@
+^renv$
+^renv\.lock$
+^AdataPangoR\.Rproj$
+^\.Rproj\.user$
