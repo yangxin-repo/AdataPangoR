@@ -83,6 +83,30 @@ point_plot_pango <- function(plotting_dataset,
 
 }
 
+#' save ggplot as png
+#' 
+#' @param gplot_obj the ggplot object
+#' 
+#' @export 
+#' 
 
+ggsave_pango <- function(png_path,
+                         gplot_obj,
+                         width,
+                         height,
+                         dpi=300) {
 
+  tmp_file <- tempfile(fileext = ".pdf")
+  ggplot2::ggsave(filename = tmp_file,
+                  plot=gplot_obj,
+                  width=width,
+                  height=height,
+                  units="mm")
+  reticulate::py$sampling_pdf_to_png(pdf_path=tmp_file,
+                                     png_path=png_path,
+                                     dpi=dpi)
+
+  return(png_path)
+
+}
 

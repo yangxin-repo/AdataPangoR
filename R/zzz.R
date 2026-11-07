@@ -4,7 +4,10 @@
   # build python enviroment
   reticulate::py_require(packages = c("anndata",
                                       "pandas",
-                                      "pyarrow"),
+                                      "numpy",
+                                      "pyarrow",
+                                      "fitz",
+                                      "PIL"),
                          python_version = "3.12")
 
   # load utils_anndata_python.py
