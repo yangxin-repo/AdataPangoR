@@ -11,5 +11,7 @@ Roxygen: list(markdown = TRUE)
 Imports: 
     reticulate,
     nanoparquet,
-    dplyr
+    dplyr,
+    ggplot2,
+    ggthemes
 Config/roxygen2/version: 8.1.1

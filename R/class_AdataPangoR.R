@@ -75,6 +75,14 @@ setMethod(f = "get_adata_obsm_pango",
 
               obsm_r <- adata@adata_obj$obsm[obsm_key]
               obsm_r <- tibble::tibble(x = obsm_r[, 1],
+                                       y = -obsm_r[, 2])
+
+            }
+
+            if (obsm_key=="X_umap" | obsm_key=="X_tsne") {
+
+              obsm_r <- adata@adata_obj$obsm[obsm_key]
+              obsm_r <- tibble::tibble(x = obsm_r[, 1],
                                        y = obsm_r[, 2])
 
             }
@@ -113,5 +121,53 @@ setMethod(f = "get_adata_obs_names_pango",
             unlink(tmp)
 
             return(obs_names_r)
+
+          })
+
+#' the generic of plotting_obsm_pango
+#' @export
+setGeneric(name = "plotting_obsm_pango",
+           def = function(adata,
+                          obsm_key,
+                          conds=list(),
+                          colour_key="leiden",
+                          show_colour=character(),
+                          facet_key=character(),
+                          size=0.5,
+                          ...){
+             standardGeneric("plotting_obsm_pango")
+           })
+
+#' the plotting_obsm_pango method for AdataPangoR
+#'
+#' @export
+setMethod(f = "plotting_obsm_pango",
+          signature = signature(adata="AdataPangoR",
+                                obsm_key="character"),
+          definition = function(adata,
+                                obsm_key,
+                                conds=list(),
+                                colour_key="leiden",
+                                show_colour=character(),
+                                facet_key=character(),
+                                size=0.5,
+                                ...){
+
+            exprs <- purrr::imap(conds, ~ rlang::expr(.data[[!!.y]] == !!.x)) |>
+              unname()
+
+            plt_dt <- get_adata_obs_pango(adata)|>
+              dplyr::filter(!!!exprs) |>
+              dplyr::rename(obs_names=index) |>
+              dplyr::inner_join(get_adata_obsm_pango(adata,obsm_key),
+                                by="obs_names")
+
+            pt_plt <- point_plot_pango(plotting_dataset=plt_dt,
+                                       colour_key=colour_key,
+                                       show_colour=show_colour,
+                                       facet_key=facet_key,
+                                       size=size)
+
+            return(pt_plt)
 
           })
